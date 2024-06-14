@@ -32,13 +32,13 @@ def _competencies_export():
     current_track_name = user.track.name.replace(" - role requirements", "")
 
     export_data = {
-        "Competencies": [],
+        "Competency": [],
         "Status": [],
         "Comments": [],
     }
 
     for competency in current_track.competencies:
-        export_data["Competencies"].append(competency.name)
+        export_data["Competency"].append(competency.name)
         export_data["Status"].append(competency.designation)
 
         competency_comments = ""
@@ -70,7 +70,7 @@ def _competencies_export():
 
     # Export to spreadsheet.
     df = pandas.DataFrame(export_data)
-    df.to_excel(output_path)
+    df.to_excel(output_path, index=False)
 
     print(f"Spreadsheet saved to: {output_path}")
 
