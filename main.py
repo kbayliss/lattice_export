@@ -27,7 +27,7 @@ def _competencies_export():
 
     job_title = data["data"]["viewer"]["user"]["title"]
 
-    # Match some different job titles against known track names.
+    # Match some specific job titles against known role names.
     match job_title:
         case "Director of Engineering":
             current_level = "Director"
