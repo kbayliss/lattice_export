@@ -1,79 +1,82 @@
-from lattice_backup import lattice
-from lattice_backup import types
-import argparse
+from lattice_export import lattice
+from lattice_export import types
+from dotenv import dotenv_values
+from pathlib import Path
+import html
+
+import pandas
+
+config = dotenv_values(".env")
 
 
-def _growth_area_backup(save: bool = True):
-    data = lattice.get_growth_areas(save=save)
-    growth_areas = data["data"]["viewer"]["growthPlanUser"]["growthPlan"][
-        "growthAreas"
-    ]["edges"]
-    for growth_area in growth_areas:
-        growth_area_entity_id = growth_area["node"]["entityId"]
+def _competencies_export():
+    """
+    Exports competency data ("Align on expectations" within Lattice) to a
+    spreadsheet.
+    """
 
-        # get the progress detail for every area
-        lattice.get_growth_area_progress(
-            growth_area_entity_id=growth_area_entity_id, save=save
-        )
-
-
-def _competencies_backup(save: bool = True):
-    data = lattice.get_competencies(save=save)
+    data = lattice.get_competencies()
     user = types.User.from_dict(data["data"]["user"])
 
     if not user.track:
-        print(
-            "I'm sorry, apparently you don't have a track assigned anymore, "
-            "I cannot export your competences 😭",
+        raise Exception(
+            "You do not have a track assigned in Lattice, so exporting data "
+            "is not possible."
         )
         return
 
-    current_job_level = user.track.get_level_by_name("Developer")
-    next_job_level = user.track.get_next_level("Developer")
+    current_level = data["data"]["viewer"]["user"]["title"]
+    current_track = user.track.get_level_by_name(current_level)
 
-    current_django = current_job_level.competencies.get_by_name("Python/Django")
-    next_django = next_job_level.competencies.get_by_name("Python/Django")
-    current_django == next_django
+    # Remove " - role requirements" from name because it's ugly :).
+    current_track_name = user.track.name.replace(" - role requirements", "")
 
-    for competency in current_job_level.competencies:
-        print(competency.designation.value if competency.designation else "")
-        print(competency.name)
+    export_data = {
+        "Competencies": [],
+        "Status": [],
+        "Comments": [],
+    }
 
-        print(current_job_level.name)
-        print(competency.expectation.description if competency.expectation else "")
+    for competency in current_track.competencies:
+        export_data["Competencies"].append(competency.name)
+        export_data["Status"].append(competency.designation)
 
-        print(next_job_level.name)
-        next_competency = next_job_level.competencies.get_by_name(competency.name)
-        print(
-            next_competency.expectation.description
-            if next_competency.expectation
-            else ""
-        )
-
+        competency_comments = ""
+        first_comment = True
         for comment in competency.comments:
-            print(comment.commenter.name, comment.created_at)
-            print(comment.body)
+            # Add a separator between comments if there are multiple.
+            if not first_comment:
+                competency_comments += "\n\n---------------\n\n"
 
-        print()
-        print("-" * 30)
+            # Get latest date.
+            comment_date = comment.edited_at or comment.created_at
+
+            # Build comment string so the result is a single string.
+            competency_comments += html.unescape(comment.body)
+            competency_comments += (
+                f"\n\n({comment.commenter.name}, {comment_date.strftime('%Y-%m-%d')})"
+            )
+
+            first_comment = False
+
+        # Either add a plain string or the string of comments.
+        export_data["Comments"].append(competency_comments)
+
+    # Build export directory.
+    output_filename = f"{current_track_name} - {current_level}.xlsx"
+    output_dir = Path("./exports")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_path = output_dir / output_filename
+
+    # Export to spreadsheet.
+    df = pandas.DataFrame(export_data)
+    df.to_excel(output_path)
+
+    print(f"Spreadsheet saved to: {output_path}")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Lattice save")
-    parser.add_argument(
-        "--save",
-        dest="save",
-        action="store_true",
-        help="Enable save (default: True)",
-    )
-    parser.add_argument(
-        "--no-save", dest="save", action="store_false", help="Disable save"
-    )
-    parser.set_defaults(save=True)
-    args = parser.parse_args()
-
-    _competencies_backup(save=args.save)
-    _growth_area_backup(save=args.save)
+    _competencies_export()
 
 
 if __name__ == "__main__":

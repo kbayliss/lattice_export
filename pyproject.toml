@@ -1,8 +1,11 @@
 [tool.poetry]
-name = "lattice-backup"
-version = "0.1.0"
+name = "lattice_export"
+version = "1.0.0"
 description = ""
-authors = ["Ester Beltrami <ester.beltrami@torchbox.com>"]
+authors = [
+".Ester Beltrami <ester.beltrami@torchbox.com>",
+"Kyle Bayliss <kyle.bayliss@torchbox.com>",
+]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -12,13 +15,15 @@ python-dotenv = "^1.0.0"
 google-api-python-client = "^2.106.0"
 google-auth-httplib2 = "^0.1.1"
 google-auth-oauthlib = "^1.1.0"
+pandas = "^2.2.2"
+openpyxl = "^3.1.4"
 
 
 [tool.poetry.group.dev.dependencies]
 detect-secrets = "^1.4.0"
 
 [tool.poetry.scripts]
-backup = "main:main"
+export = "main:main"
 
 
 [build-system]

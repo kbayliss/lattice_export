@@ -2,7 +2,6 @@ import httpx
 from pathlib import Path
 from dotenv import dotenv_values
 import json
-from datetime import datetime
 
 config = dotenv_values(".env")
 
@@ -11,10 +10,9 @@ def _execute(
     query_name: str,
     id: str,
     variables: dict[str, str],
-    save: bool = True,
-    backup_name_suffix: str = "",
+    export_name_suffix: str = "",
 ):
-    query = Path(f"./lattice_backup/queries/{query_name}.graphql").read_text()
+    query = Path(f"./lattice_export/queries/{query_name}.graphql").read_text()
     data = {
         "id": "CompetencyViewQuery",
         "query": query,
@@ -58,61 +56,15 @@ def _execute(
 
             raise e
 
-        if save:
-            # Generate a filename with a timestamp
-            timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-            output_filename = f"{timestamp}_{query_name}{backup_name_suffix}.json"
-
-            # Create the backup directory if it doesn't exist
-            backup_directory = Path("./backup")
-            backup_directory.mkdir(parents=True, exist_ok=True)
-
-            # Define the full path for the new file in the backup directory
-            output_file_path = backup_directory / output_filename
-            output_file_path.write_text(
-                json.dumps(data, indent=4)
-            )  # Save with pretty print
-            print(f"Data saved to {output_file_path}")
-
         return data
 
 
-def get_competencies(save: bool = True):
+def get_competencies():
     response = _execute(
         query_name="competency-view",
         id="CompetencyViewQuery",
         variables={
             "userEntityId": config["LATTICE_USER_ENTITY_ID"],
         },
-        save=save,
-    )
-    return response
-
-
-def get_growth_areas(save: bool = True):
-    response = _execute(
-        query_name="growth-area",
-        id="GrowthAreasQuery",
-        variables={
-            "userEntityId": config["LATTICE_USER_ENTITY_ID"],
-        },
-        save=save,
-    )
-    return response
-
-
-def get_growth_area_progress(
-    growth_area_entity_id: str,
-    save: bool = True,
-):
-    response = _execute(
-        query_name="growth-area-progress",
-        id="GrowthAreaProgressQuery",
-        variables={
-            "userEntityId": config["LATTICE_USER_ENTITY_ID"],
-            "growthAreaEntityId": growth_area_entity_id,
-        },
-        save=save,
-        backup_name_suffix=f"_{growth_area_entity_id}",
     )
     return response
