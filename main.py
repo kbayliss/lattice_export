@@ -28,6 +28,13 @@ def _competencies_export():
     current_level = data["data"]["viewer"]["user"]["title"]
     current_track = user.track.get_level_by_name(current_level)
 
+    if not current_track.competencies:
+        raise Exception(
+            "There are no competencies defined for your assigned track in "
+            "Lattice, so there is nothing to export here."
+        )
+        return
+
     # Remove " - role requirements" from name because it's ugly :).
     current_track_name = user.track.name.replace(" - role requirements", "")
 
