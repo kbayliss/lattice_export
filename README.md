@@ -38,9 +38,9 @@ Copy the `.env.example` to a new file named `.env`.
 cp .env.example .env
 ```
 
-Fill in the `ACCESS_TOKEN` and `LATTICE_USER_ENTITY_ID` with your own values obtained from Lattice.
+Fill in the `LATTICE_ACCESS_TOKEN` and `LATTICE_USER_ENTITY_ID` with your own values obtained from Lattice.
 
-#### Obtaining ACCESS_TOKEN
+#### Obtaining LATTICE_ACCESS_TOKEN
 
 1. Open your web browser and log into your Lattice account.
 2. Open the browser's developer tools and go to the Network tab.
@@ -54,7 +54,7 @@ Fill in the `ACCESS_TOKEN` and `LATTICE_USER_ENTITY_ID` with your own values obt
 
 ## Running the Script
 
-Once you have your `ACCESS_TOKEN` and `LATTICE_USER_ENTITY_ID`, you can run the script:
+Once you have your `LATTICE_ACCESS_TOKEN` and `LATTICE_USER_ENTITY_ID`, you can run the script:
 
 ```bash
 poetry run export
@@ -62,7 +62,7 @@ poetry run export
 
 ## Important notes
 
-- Do not share your `ACCESS_TOKEN` or `LATTICE_USER_ENTITY_ID` as they are sensitive information that can grant access to your personal data on Lattice.
+- Do not share your `LATTICE_ACCESS_TOKEN` or `LATTICE_USER_ENTITY_ID` as they are sensitive information that can grant access to your personal data on Lattice.
 
 ## Contributing
 

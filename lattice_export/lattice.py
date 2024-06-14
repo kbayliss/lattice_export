@@ -24,7 +24,7 @@ def _execute(
                 "https://torchbox.latticehq.com/graphql",
                 json=data,
                 cookies={
-                    "access_token": config["ACCESS_TOKEN"],
+                    "access_token": config["LATTICE_ACCESS_TOKEN"],
                 },
             )
             response.raise_for_status()
