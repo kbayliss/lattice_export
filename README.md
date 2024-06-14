@@ -1,4 +1,4 @@
-# Lattice Competency export Tool
+# Lattice competency export tool
 
 This project will export your competency data ("Align on expectations" within Lattice) to a spreadsheet.
 
@@ -47,7 +47,7 @@ Fill in the `LATTICE_ACCESS_TOKEN` and `LATTICE_USER_ENTITY_ID` with your own va
 3. Filter for `/graphql/` to find a call to the GraphQL API.
 4. Look in the request Headers or the Cookies to find the `access_token`. It should look like `access_token=...;`.
 
-#### Finding LATTICE_USER_ENTITY_ID
+#### Obtaining LATTICE_USER_ENTITY_ID
 
 1. In the developer tools under the Network tab, look for any GraphQL API call payloads.
 2. Find the request payload containing `userEntityId: ...` in the variables.
