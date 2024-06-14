@@ -38,15 +38,15 @@ def _competencies_export():
 
     if not current_track:
         raise Exception(
-            "Could not find your current role/level within Lattice - speak "
-            "to Kyle or review line 31 in main.py and contribute your "
+            "Could not find a role within Lattice that matches your job title. "
+            "Speak to Kyle or review line 31 in main.py and contribute your "
             "changes :)."
         )
         return
 
     if not current_track.competencies:
         raise Exception(
-            "There are no competencies defined for your assigned track in "
+            "There are no competencies assigned to your track and role within "
             "Lattice, so there is nothing to export here."
         )
         return
