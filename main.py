@@ -25,7 +25,15 @@ def _competencies_export():
         )
         return
 
-    current_level = data["data"]["viewer"]["user"]["title"]
+    job_title = data["data"]["viewer"]["user"]["title"]
+
+    # Match some different job titles against known track names.
+    match job_title:
+        case "Director of Engineering":
+            current_level = "Director"
+        case _:
+            current_level = job_title
+
     current_track = user.track.get_level_by_name(current_level)
 
     if not current_track.competencies:
