@@ -35,10 +35,12 @@ def _competencies_export():
         "Competency": [],
         "Status": [],
         "Comments": [],
+        "Competency ID": [],
     }
 
     for competency in current_track.competencies:
         export_data["Competency"].append(competency.name)
+        export_data["Competency ID"].append(competency.entity_id)
         export_data["Status"].append(competency.designation)
 
         competency_comments = ""
