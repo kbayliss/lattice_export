@@ -36,6 +36,14 @@ def _competencies_export():
 
     current_track = user.track.get_level_by_name(current_level)
 
+    if not current_track:
+        raise Exception(
+            "Could not find your current role/level within Lattice - speak "
+            "to Kyle or review line 31 in main.py and contribute your "
+            "changes :)."
+        )
+        return
+
     if not current_track.competencies:
         raise Exception(
             "There are no competencies defined for your assigned track in "
